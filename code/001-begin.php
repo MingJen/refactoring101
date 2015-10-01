@@ -62,19 +62,33 @@ class Movie {
     const NEW_RELEASE = 1;
 
     public $title;
-    public $priceCode;
+    public $price;
 
     public function __construct($title, $priceCode) {
         $this->title = $title;
-        $this->setPriceCode($priceCode);
+        $this->setPrice($priceCode);
     }
 
     public function getPriceCode() {
-        return $this->priceCode;
+        return $this->price->getPriceCode();
     }
 
-    public function setPriceCode($priceCode) {
-        $this->priceCode = $priceCode;
+    public function setPrice($priceCode) {
+        switch ($priceCode) {
+            case self::REGULAR:
+                $this->price = new RegularPrice();
+                break;
+            case self::CHILDRENS:
+                $this->price = new ChildrensPrice();
+                break;
+            case self::NEW_RELEASE:
+                $this->price = new NewReleasePrice();
+                break;
+
+            default:
+                throw new Exception('Incorrect Price Code.');
+                break;
+        }
     }
 
     public function getTitle() {
@@ -143,6 +157,32 @@ class Rental {
     }
 }
 
+abstract class Price
+{
+    abstract protected function getPriceCode();
+}
+
+class ChildrensPrice extends Price
+{
+    public function getPriceCode()
+    {
+        return Movie::CHILDRENS;
+    }
+}
+class NewReleasePrice extends Price
+{
+    public function getPriceCode()
+    {
+        return Movie::NEW_RELEASE;
+    }
+}
+class RegularPrice extends Price
+{
+    public function getPriceCode()
+    {
+        return Movie::REGULAR;
+    }
+}
 
 // define customer
 $customer = new Customer('Adam Culp');
