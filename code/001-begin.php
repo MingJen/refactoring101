@@ -29,12 +29,7 @@ class Customer {
 
         foreach ($this->rentals as $rental) {
 
-            $frequentRenterPoints++;
-
-            // add bonus for a two day release rental
-            if (($rental->movie->getPriceCode() == Movie::NEW_RELEASE) && ($rental->getDaysRented() > 1)) {
-                $frequentRenterPoints++;
-            }
+            $frequentRenterPoints+= $rental->getFrequentRenterPoints();
 
             $result .= "\t" . $rental->movie->getTitle() . "\t" . $rental->getCharge() . "\n";
             $totalAmount += $rental->getCharge();
@@ -114,6 +109,14 @@ class Rental {
                 break;
         }
         return $result;
+    }
+
+    public function getFrequentRenterPoints()
+    {
+        if (($this->movie->getPriceCode() == Movie::NEW_RELEASE) && ($this->getDaysRented() > 1)) {
+            return 2;
+        }
+        return 1;
     }
 }
 
