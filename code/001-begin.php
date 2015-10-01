@@ -29,8 +29,6 @@ class Customer {
 
         foreach ($this->rentals as $rental) {
 
-            $thisAmount = $rental->getCharge();
-
             $frequentRenterPoints++;
 
             // add bonus for a two day release rental
@@ -38,8 +36,8 @@ class Customer {
                 $frequentRenterPoints++;
             }
 
-            $result .= "\t" . $rental->movie->getTitle() . "\t" . $thisAmount . "\n";
-            $totalAmount += $thisAmount;
+            $result .= "\t" . $rental->movie->getTitle() . "\t" . $rental->getCharge() . "\n";
+            $totalAmount += $rental->getCharge();
         }
 
         // add footer lines
