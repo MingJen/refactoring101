@@ -105,6 +105,14 @@ class Movie {
         }
         return $result;
     }
+
+    public function getFrequentRenterPoints($daysRented)
+    {
+        if (($this->getPriceCode() == self::NEW_RELEASE) && ($daysRented > 1)) {
+            return 2;
+        }
+        return 1;
+    }
 }
 
 class Rental {
@@ -131,10 +139,7 @@ class Rental {
 
     public function getFrequentRenterPoints()
     {
-        if (($this->movie->getPriceCode() == Movie::NEW_RELEASE) && ($this->getDaysRented() > 1)) {
-            return 2;
-        }
-        return 1;
+        return $this->movie->getFrequentRenterPoints($this->getDaysRented());
     }
 }
 
