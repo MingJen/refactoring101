@@ -6,23 +6,28 @@
  *
  */
 
-class Customer {
+class Customer
+{
     public $name;
     public $rentals;
 
-    public function __construct($name) {
+    public function __construct($name)
+    {
         $this->name = $name;
     }
 
-    public function addRental(Rental $rental) {
+    public function addRental($rental)
+    {
         $this->rentals[] = $rental;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
-    public function statement() {
+    public function statement()
+    {
         $result = "Rental Record for " . $this->getName() . "\n";
 
         foreach ($this->rentals as $rental) {
@@ -52,11 +57,11 @@ class Customer {
             $result+= $rental->getFrequentRenterPoints();
         }
         return $result;
-
     }
 }
 
-class Movie {
+class Movie
+{
     const CHILDRENS = 2;
     const REGULAR = 0;
     const NEW_RELEASE = 1;
@@ -64,16 +69,19 @@ class Movie {
     public $title;
     public $price;
 
-    public function __construct($title, $priceCode) {
+    public function __construct($title, $priceCode)
+    {
         $this->title = $title;
         $this->setPrice($priceCode);
     }
 
-    public function getPriceCode() {
+    public function getPriceCode()
+    {
         return $this->price->getPriceCode();
     }
 
-    public function setPrice($priceCode) {
+    public function setPrice($priceCode)
+    {
         switch ($priceCode) {
             case self::REGULAR:
                 $this->price = new RegularPrice();
@@ -91,33 +99,14 @@ class Movie {
         }
     }
 
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->title;
     }
 
     public function getCharge($daysRented)
     {
-        $result = 0;
-        switch ($this->getPriceCode()) {
-            case self::REGULAR:
-                $result += 2;
-                if ($daysRented > 2) {
-                    $result += ($daysRented - 2) * 1.5;
-                }
-                break;
-
-            case self::NEW_RELEASE:
-                $result += $daysRented * 3;
-                break;
-
-            case self::CHILDRENS:
-                $result += 1.5;
-                if ($daysRented > 3) {
-                    $result += ($daysRented - 3) * 1.5;
-                }
-                break;
-        }
-        return $result;
+        return $this->price->getCharge($daysRented);
     }
 
     public function getFrequentRenterPoints($daysRented)
@@ -129,20 +118,24 @@ class Movie {
     }
 }
 
-class Rental {
+class Rental
+{
     public $movie;
     public $daysRented;
 
-    public function __construct(Movie $movie, $daysRented) {
+    public function __construct(Movie $movie, $daysRented)
+    {
         $this->movie = $movie;
         $this->daysRented = $daysRented;
     }
 
-    public function getDaysRented() {
+    public function getDaysRented()
+    {
         return $this->daysRented;
     }
 
-    public function getMovie() {
+    public function getMovie()
+    {
         return $this->movie;
     }
 
@@ -160,6 +153,31 @@ class Rental {
 abstract class Price
 {
     abstract protected function getPriceCode();
+
+    public function getCharge($daysRented)
+    {
+        $result = 0;
+        switch ($this->getPriceCode()) {
+            case Movie::REGULAR:
+                $result += 2;
+                if ($daysRented > 2) {
+                    $result += ($daysRented - 2) * 1.5;
+                }
+                break;
+
+            case Movie::NEW_RELEASE:
+                $result += $daysRented * 3;
+                break;
+
+            case Movie::CHILDRENS:
+                $result += 1.5;
+                if ($daysRented > 3) {
+                    $result += ($daysRented - 3) * 1.5;
+                }
+                break;
+        }
+        return $result;
+    }
 }
 
 class ChildrensPrice extends Price
