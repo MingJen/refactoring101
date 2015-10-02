@@ -154,30 +154,7 @@ abstract class Price
 {
     abstract protected function getPriceCode();
 
-    public function getCharge($daysRented)
-    {
-        $result = 0;
-        switch ($this->getPriceCode()) {
-            case Movie::REGULAR:
-                $result += 2;
-                if ($daysRented > 2) {
-                    $result += ($daysRented - 2) * 1.5;
-                }
-                break;
-
-            case Movie::NEW_RELEASE:
-                $result += $daysRented * 3;
-                break;
-
-            case Movie::CHILDRENS:
-                $result += 1.5;
-                if ($daysRented > 3) {
-                    $result += ($daysRented - 3) * 1.5;
-                }
-                break;
-        }
-        return $result;
-    }
+    abstract protected function getCharge($daysRented);
 }
 
 class ChildrensPrice extends Price
@@ -186,6 +163,15 @@ class ChildrensPrice extends Price
     {
         return Movie::CHILDRENS;
     }
+
+    public function getCharge($daysRented)
+    {
+        $result = 1.5;
+        if ($daysRented > 3) {
+            $result += ($daysRented - 3) * 1.5;
+        }
+        return $result;
+    }
 }
 class NewReleasePrice extends Price
 {
@@ -193,12 +179,26 @@ class NewReleasePrice extends Price
     {
         return Movie::NEW_RELEASE;
     }
+
+    public function getCharge($daysRented)
+    {
+        return $daysRented * 3;
+    }
 }
 class RegularPrice extends Price
 {
     public function getPriceCode()
     {
         return Movie::REGULAR;
+    }
+
+    public function getCharge($daysRented)
+    {
+        $result = 2;
+        if ($daysRented > 2) {
+            $result += ($daysRented - 2) * 1.5;
+        }
+        return $result;
     }
 }
 
