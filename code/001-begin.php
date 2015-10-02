@@ -111,10 +111,7 @@ class Movie
 
     public function getFrequentRenterPoints($daysRented)
     {
-        if (($this->getPriceCode() == self::NEW_RELEASE) && ($daysRented > 1)) {
-            return 2;
-        }
-        return 1;
+        return $this->price->getFrequentRenterPoints($daysRented);
     }
 }
 
@@ -155,6 +152,11 @@ abstract class Price
     abstract protected function getPriceCode();
 
     abstract protected function getCharge($daysRented);
+
+    public function getFrequentRenterPoints($daysRented)
+    {
+        return 1;
+    }
 }
 
 class ChildrensPrice extends Price
@@ -183,6 +185,11 @@ class NewReleasePrice extends Price
     public function getCharge($daysRented)
     {
         return $daysRented * 3;
+    }
+
+    public function getFrequentRenterPoints($daysRented)
+    {
+        return ($daysRented > 1) ? 2 : 1;
     }
 }
 class RegularPrice extends Price
